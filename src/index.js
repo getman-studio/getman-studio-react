@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import Admin from './Admin';
+import Admin from './admin/Admin';
 
 import * as serviceWorker from './serviceWorker';
 
