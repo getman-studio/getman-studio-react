@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
+import firebase from '../firebase'
 
 import { withStyles } from '@material-ui/core/styles';
 import {
-    Typography, TextField, Button, Grid
+    Typography, TextField, Button, Grid, CircularProgress
 } from '@material-ui/core';
 
 const styles = theme => ({
@@ -18,6 +19,9 @@ const styles = theme => ({
     button: {
         margin: theme.spacing.unit,
     },
+    progress: {
+        margin: theme.spacing.unit * 2,
+    },
 });
 
 class CreateCategory extends Component {
@@ -25,6 +29,8 @@ class CreateCategory extends Component {
         super(props);
         this.state = {
             name: "",
+            loading: false,
+            error: null
         };
     }
 
@@ -37,19 +43,27 @@ class CreateCategory extends Component {
                     Створити категорію
                 </Typography>
 
-                <TextField
-                    id="standard-name"
-                    label="Назва"
-                    className={classes.textField}
-                    value={this.state.name}
-                    onChange={this.handleChange}
-                    margin="normal"
-                />
+                <Grid container direction="row" alignItems="center">
+                    <TextField
+                        id="standard-name"
+                        label="Назва"
+                        className={classes.textField}
+                        value={this.state.name}
+                        onChange={this.handleChange}
+                        margin="normal"
+                        error={this.state.error != null}
+                    />
+
+                    {this.state.loading &&
+                        <CircularProgress className={classes.progress} size={28} />
+                    }
+
+                </Grid>
 
                 <Grid justify="flex-end" container direction="row" alignItems="center">
-                    <Button className={classes.button}>Скасувати</Button>
+                    <Button className={classes.button} onClick={this.props.onCancel}>Скасувати</Button>
 
-                    <Button variant="contained" color="primary" component="span" className={classes.button}>
+                    <Button variant="contained" color="primary" component="span" className={classes.button} onClick={this.createCategory}>
                         Створити
                     </Button>
                 </Grid>
@@ -60,6 +74,35 @@ class CreateCategory extends Component {
         this.setState({
             name: event.target.value,
         });
+    }
+
+    createCategory = () => {
+        this.setState({
+            loading: true,
+            error: null
+        })
+
+        if (this.state.name != "") {
+            firebase.firestore()
+                .collection("categories")
+                .doc().set({
+                    name: this.state.name
+                })
+                .then(data => {
+                    console.log(data);
+                    this.props.onSuccess();
+                    this.setState({
+                        error: null,
+                        loading: false,
+                    })
+                })
+                .catch(e => {
+                    this.setState({
+                        loading: false,
+                        error: e,
+                    })
+                });
+        }
     }
 }
 

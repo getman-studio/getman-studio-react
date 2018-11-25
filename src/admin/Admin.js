@@ -35,6 +35,14 @@ class Admin extends Component {
     }
 
     componentDidMount() {
+        this.loadData();
+    }
+
+    componentWillUnmount() {
+
+    }
+
+    loadData = () => {
         firebase.firestore()
             .collection("categories")
             .get()
@@ -47,10 +55,6 @@ class Admin extends Component {
                     })
                 });
             });
-    }
-
-    componentWillUnmount() {
-
     }
 
     render() {
@@ -98,11 +102,12 @@ class Admin extends Component {
                 <Modal
                     aria-labelledby="simple-modal-title"
                     aria-describedby="simple-modal-description"
-                    open={this.state.isCategoryCreating}
-                    onClose={this.handleClose}>
+                    open={this.state.isCategoryCreating}>
 
                     <div class={classes.modal}>
-                        <CreateCategory />
+                        <CreateCategory
+                            onCancel={this.closeModal}
+                            onSuccess={this.onCategoryAdded} />
                     </div>
                 </Modal>
             </div>
@@ -116,12 +121,23 @@ class Admin extends Component {
         });
     }
 
-
     openNewCategoryItemModal = () => {
         this.setState({
             isItemCreating: true,
             isCategoryCreating: false,
         });
+    }
+
+    closeModal = () => {
+        this.setState({
+            isItemCreating: false,
+            isCategoryCreating: false,
+        });
+    }
+
+    onCategoryAdded = () => {
+        this.closeModal();
+        this.loadData();
     }
 }
 
