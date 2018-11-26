@@ -82,7 +82,7 @@ class CreateCategory extends Component {
             error: null
         })
 
-        if (this.state.name != "") {
+        if (this.state.name !== "") {
             firebase.firestore()
                 .collection("categories")
                 .doc().set({
