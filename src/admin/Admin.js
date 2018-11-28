@@ -51,7 +51,7 @@ class Admin extends Component {
                 this.setState({
                     categories: snapshot.docs.map(item => {
                         return {
-                            name: item.name
+                            data: item.data()
                         };
                     })
                 });
@@ -74,11 +74,13 @@ class Admin extends Component {
                                 </ListItemIcon>
                                 <ListItemText primary="додати категорію" />
                             </ListItem>
-                            {this.state.categories.map(_ => (
+                            {this.state.categories
+                            .filter(item => item.data.name)
+                            .map(item => (
                                 <ListItem
                                     button
                                     onClick={event => console.log(event)}>
-                                    <ListItemText primary="text" />
+                                    <ListItemText primary={item.data.name} />
                                 </ListItem>
                             ))}
                         </List>
