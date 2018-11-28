@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import firebase from '../firebase'
 
 import CreateCategory from './CreateCategory'
+import CreateCategoryItem from './CreateCategoryItem'
 
 import AddIcon from '@material-ui/icons/Add';
 
@@ -106,6 +107,18 @@ class Admin extends Component {
 
                     <div class={classes.modal}>
                         <CreateCategory
+                            onCancel={this.closeModal}
+                            onSuccess={this.onCategoryAdded} />
+                    </div>
+                </Modal>
+
+                <Modal
+                    aria-labelledby="simple-modal-title"
+                    aria-describedby="simple-modal-description"
+                    open={this.state.isItemCreating}>
+
+                    <div class={classes.modal}>
+                        <CreateCategoryItem
                             onCancel={this.closeModal}
                             onSuccess={this.onCategoryAdded} />
                     </div>
